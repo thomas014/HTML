@@ -1,646 +1,609 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>杜拜6日6夜姐妹輕奢之旅 | 數碼行程伴侶</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dose Audit Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Import Chart.js for professional graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
     <style>
+        /* --- RESET & BASE STYLES --- */
+        :root {
+            --bg-color: #0f172a; /* Dark Slate */
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --accent-color: #3b82f6; /* Bright Blue */
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #FDFBF7; /* Soft Cream */
-            color: #4A4A4A;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 20%);
+            font-family: var(--font-body);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-main);
         }
-        h1, h2, h3, .serif-font {
-            font-family: 'Playfair Display', serif;
+
+        /* --- SLIDE CONTAINER --- */
+        #presentation-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            background: transparent;
+            perspective: 1000px;
         }
-        .active-tab {
-            border-bottom: 2px solid #C5A065; /* Gold */
-            color: #8C6B38;
-            font-weight: 600;
-        }
-        .timeline-line {
+
+        .slide {
             position: absolute;
-            left: 1rem;
             top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #E5E7EB;
-            z-index: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 50px 70px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease-in-out;
+            pointer-events: none;
+            overflow: hidden;
         }
-        .card-shadow {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            z-index: 10;
         }
-        .gold-gradient {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A065 100%);
+
+        .slide.prev {
+            opacity: 0;
+            transform: translateX(-100px);
+            z-index: 5;
         }
-        /* Chart Container Specific Styles */
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            color: var(--bg-color);
+        }
+
+        h1 { font-size: 52px; line-height: 1.1; margin-bottom: 24px; }
+        h2 { font-size: 38px; margin-bottom: 20px; border-bottom: 4px solid var(--accent-color); padding-bottom: 10px; display: inline-block; }
+        h3 { font-size: 26px; margin-bottom: 15px; color: var(--accent-color); }
+        
+        p, li { font-size: 20px; line-height: 1.5; margin-bottom: 12px; color: #334155; }
+        ul { margin-left: 30px; }
+        
+        /* --- TITLE SLIDE --- */
+        .title-slide {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e293b 100%);
+            color: white;
+            justify-content: center;
+            text-align: left;
+        }
+        .title-slide h1 { color: white; font-size: 60px; }
+        .title-slide h2 { color: #94a3b8; border: none; font-size: 26px; font-family: var(--font-body); font-weight: 300; }
+        .title-slide .meta { margin-top: 60px; font-size: 18px; color: #cbd5e1; }
+        .title-slide .meta strong { color: var(--accent-color); }
+
+        /* --- LAYOUT HELPERS --- */
+        .col-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            height: 100%;
+            align-items: center;
+        }
+        .content-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        /* --- TABLES --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+            margin-top: 15px;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; font-weight: 700; color: var(--bg-color); }
+        tr:last-child td { border-bottom: none; }
+
+        /* --- CHART CONTAINERS --- */
         .chart-wrapper {
             position: relative;
+            height: 400px;
             width: 100%;
-            max-width: 500px;
-            height: 300px;
-            margin: 0 auto;
+            display: flex;
+            justify-content: center;
         }
         canvas {
-            width: 100% !important;
-            height: 100% !important;
+            max-height: 100%;
+            max-width: 100%;
         }
-        /* Hide scrollbar for horizontal scrolling */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-    <!-- Chosen Palette: Warm Neutrals & Luxury Gold (Cream #FDFBF7, Gold #C5A065, Sand #E8E1D5, Dark Grey #4A4A4A) -->
-    <!-- Application Structure Plan: Dashboard style. 
-         1. Hero Section: Trip overview & key stats.
-         2. Day Navigator: Horizontal scrollable tabs for Days 1-7.
-         3. Dynamic Content Area: 
-            - Daily Vibe (Summary)
-            - Interactive Timeline (Schedule)
-            - Highlight Card (Key attraction photo/info)
-            - Dining Spotlight (Restaurant info)
-         4. Budget Visualizer: Chart.js doughnut chart to show cost breakdown.
-         5. Essentials Toolkit: Dress code, packing, and transport tips.
-         Designed to be a 'digital concierge' for the user during the trip. -->
-    <!-- Visualization & Content Choices:
-         - Timeline: Vertical layout with icons to represent flow of the day. Goal: Change/Track.
-         - Budget Chart: Doughnut chart. Goal: Inform/Organize. Justification: Easy to see proportion of spending (Food vs Tickets).
-         - Info Cards: Clean UI components for attractions/restaurants. Goal: Inform.
-         - Interaction: Clicking Day tabs updates all sections below instantly.
-         - NO SVG/Mermaid: Used CSS shapes and Unicode characters for icons. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-</head>
-<body class="antialiased min-h-screen flex flex-col">
-
-    <!-- Hero Section -->
-    <header class="bg-white pt-8 pb-6 px-4 border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div>
-                <p class="text-xs tracking-widest uppercase text-gray-500 mb-1">UAE Travel Planner</p>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 serif-font">杜拜6日6夜姐妹輕奢之旅</h1>
-            </div>
-            <div class="text-right hidden md:block">
-                <p class="text-sm text-gray-500">住宿基地</p>
-                <p class="font-medium text-[#C5A065]">Aloft Dubai Creek</p>
-            </div>
-        </div>
         
-        <!-- Day Navigation -->
-        <nav class="max-w-4xl mx-auto mt-6 overflow-x-auto no-scrollbar whitespace-nowrap pb-2" id="dayNav">
-            <!-- Tabs injected by JS -->
-        </nav>
-    </header>
+        /* --- NAVIGATION --- */
+        .nav-controls {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+        .slide:not(.title-slide):not(.dark-slide) ~ .nav-controls .nav-btn {
+            background: rgba(15, 23, 42, 0.1);
+            border: 1px solid rgba(15, 23, 42, 0.2);
+            color: var(--bg-color);
+        }
 
-    <!-- Main Content -->
-    <main class="flex-grow px-4 py-6 max-w-4xl mx-auto w-full space-y-8">
+        /* --- FOOTER --- */
+        .slide-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 70px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
 
-        <!-- Intro Text for Context -->
-        <section class="mb-4">
-            <p class="text-gray-600 text-sm md:text-base leading-relaxed">
-                歡迎使用您的專屬數位行程助手。此應用程式將您的 6 日 6 夜行程轉化為互動式儀表板。
-                點擊上方日期標籤即可查看每日詳細時間表、重點活動及餐飲推薦。
-                底部設有預算分析與實用貼士，助您輕鬆掌控行程節奏。
-            </p>
-        </section>
+    </style>
+</head>
+<body>
 
-        <!-- Dynamic Day Content Container -->
-        <div id="dayContent" class="grid grid-cols-1 lg:grid-cols-3 gap-6 transition-opacity duration-300">
-            
-            <!-- Left Column: Timeline -->
-            <div class="lg:col-span-2 space-y-6">
-                
-                <!-- Day Summary Card -->
-                <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#C5A065]">
-                    <h2 id="dayTitle" class="text-xl font-bold text-gray-800 serif-font mb-2"></h2>
-                    <p id="dayVibe" class="text-gray-600 italic text-sm"></p>
-                    <div class="mt-4 flex flex-wrap gap-2" id="dayTags">
-                        <!-- Tags injected by JS -->
-                    </div>
-                </div>
+<div id="presentation-container">
 
-                <!-- Detailed Timeline -->
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-semibold mb-6 serif-font flex items-center">
-                        <span class="mr-2">⏱️</span> 今日時間軸
-                    </h3>
-                    <div class="relative space-y-8 pl-6" id="timelineContainer">
-                        <div class="timeline-line"></div>
-                        <!-- Timeline items injected by JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Highlights & Dining -->
-            <div class="space-y-6">
-                
-                <!-- Featured Highlight -->
-                <div class="bg-white rounded-xl card-shadow overflow-hidden">
-                    <div class="h-32 bg-gray-200 relative">
-                        <!-- Simulated Image with Canvas/CSS -->
-                        <div class="absolute inset-0 bg-gray-300 flex items-center justify-center text-gray-500 text-sm font-medium" id="highlightImgPlaceholder">
-                            [景點圖片]
-                        </div>
-                        <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-[#C5A065]">
-                            必去亮點
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <h3 id="highlightTitle" class="font-bold text-lg mb-2 serif-font"></h3>
-                        <p id="highlightDesc" class="text-sm text-gray-600 mb-4 leading-relaxed"></p>
-                        <a id="highlightLink" href="#" target="_blank" class="block w-full text-center py-2 border border-[#C5A065] text-[#C5A065] rounded hover:bg-[#C5A065] hover:text-white transition text-sm">
-                            查看官網 / 購票
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Featured Dining -->
-                <div class="bg-white p-5 rounded-xl card-shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-lg serif-font">🍽️ 今日精選餐飲</h3>
-                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">推薦</span>
-                    </div>
-                    <h4 id="diningTitle" class="font-semibold text-gray-800"></h4>
-                    <p id="diningType" class="text-xs text-gray-500 mb-2"></p>
-                    <p id="diningDesc" class="text-sm text-gray-600 leading-relaxed"></p>
-                </div>
-
-                <!-- Transport Tip for the Day -->
-                <div class="bg-[#F8F5F0] p-5 rounded-xl border border-[#E8E1D5]">
-                    <h3 class="font-bold text-sm mb-2 text-[#8C6B38]">🚕 交通建議</h3>
-                    <p id="transportTip" class="text-xs text-gray-600 leading-relaxed"></p>
-                </div>
+    <!-- Slide 1: Title -->
+    <div class="slide title-slide active" data-slide="1">
+        <div class="content-center">
+            <h1>Comparative Analysis of Dose-Area Product for Adult Abdomen, KUB, and Pelvis Radiographs</h1>
+            <h2>Across Ten Digital Radiography Machines</h2>
+            <div class="meta">
+                <p><strong>Authors:</strong> Ms KW Chan, Mr CW Yeung & Mr KF Lo</p>
+                <p><strong>Presented by:</strong> Mr CM Lee & Mr KS Cheung</p>
+                <p style="margin-top: 30px;">March 13th, 2026</p>
             </div>
         </div>
+        <div class="slide-footer">Slide 1</div>
+    </div>
 
-        <!-- Analytics & Tips Section (Always Visible) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            
-            <!-- Budget Analysis -->
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-lg font-bold mb-2 serif-font">💰 預算分析 (每人)</h3>
-                <p class="text-sm text-gray-500 mb-6">總預算目標: HKD 10,000 (約 AED 4,700)</p>
-                
-                <div class="chart-wrapper">
-                    <canvas id="budgetChart"></canvas>
-                </div>
-                <div class="mt-4 grid grid-cols-2 gap-4 text-center">
-                    <div class="p-2 bg-gray-50 rounded">
-                        <p class="text-xs text-gray-500">預估總花費</p>
-                        <p class="font-bold text-gray-800">AED 4,700</p>
-                    </div>
-                    <div class="p-2 bg-green-50 rounded">
-                        <p class="text-xs text-green-600">狀態</p>
-                        <p class="font-bold text-green-700">符合預算</p>
-                    </div>
-                </div>
+    <!-- Slide 2: Content -->
+    <div class="slide" data-slide="2">
+        <h2>Content</h2>
+        <div class="col-2">
+            <ul>
+                <li>Background</li>
+                <li>Methodology</li>
+                <li>Results and comparisons
+                    <ul>
+                        <li>Results</li>
+                        <li>Comparison with UK national DRL</li>
+                        <li>Comparison across hospitals in NTWC</li>
+                        <li>Comparison between newly replaced and old machines</li>
+                        <li>Comparison across exam rooms</li>
+                        <li>Comparison with 2019 audit in NTWC</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul>
+                <li>Discussion</li>
+                <li>Limitation</li>
+                <li>Follow Up Actions</li>
+                <li>Q&A</li>
+            </ul>
+        </div>
+        <div class="slide-footer">Slide 2</div>
+    </div>
+
+    <!-- Slide 3: Background -->
+    <div class="slide" data-slide="3">
+        <h2>Background</h2>
+        <div class="content-center">
+            <div class="highlight-box">
+                <p>Abdomen AP, KUB, and pelvis AP radiographs are crucial for diagnosis and account for a significant portion of radiographic examinations.</p>
             </div>
+            <ul>
+                <li>High frequency of requests with repeated exposures may lead to cumulative radiation dose concerns.</li>
+                <li>Risk of stochastic cancer development from repeated exposures.</li>
+            </ul>
+        </div>
+        <div class="slide-footer">Slide 3</div>
+    </div>
 
-            <!-- Smart Tips Accordion -->
-            <div class="bg-white p-6 rounded-xl card-shadow flex flex-col">
-                <h3 class="text-lg font-bold mb-4 serif-font">🎒 姐妹遊必備錦囊</h3>
-                
-                <div class="space-y-3 flex-grow overflow-y-auto max-h-80 pr-2 custom-scrollbar">
-                    <!-- Tip 1 -->
-                    <div class="border border-gray-100 rounded-lg overflow-hidden">
-                        <button class="w-full flex justify-between items-center p-3 bg-gray-50 text-sm font-medium hover:bg-gray-100 transition" onclick="toggleTip('tip1')">
-                            <span>👗 穿搭與服裝規定</span>
-                            <span class="text-gray-400">▼</span>
-                        </button>
-                        <div id="tip1" class="hidden p-3 text-sm text-gray-600 bg-white">
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>清真寺：</strong>必須包頭、長袖、長褲/裙（不透膚、不緊身）。</li>
-                                <li><strong>沙漠：</strong>推薦亮色系（紅/黃/白）長裙，拍照最美。</li>
-                                <li><strong>高級餐廳：</strong>Smart Casual，避免拖鞋短褲。</li>
-                                <li><strong>Aura Skypool：</strong>室內用餐可穿渡假洋裝。</li>
-                            </ul>
-                        </div>
-                    </div>
+    <!-- Slide 4: Objectives -->
+    <div class="slide" data-slide="4">
+        <h2>Background (Continued)</h2>
+        <div class="content-center">
+            <p>The audit seeks to evaluate DAP across different machines, benchmark results against the UK national DRLs, and support the advancement of radiation safety.</p>
+            <div class="highlight-box" style="background: #e0f2fe; border-color: #0ea5e9;">
+                <h3>Key Objective</h3>
+                <p>Ensure patient radiation doses remain as low as reasonably achievable (ALARA) while maintaining diagnostic quality across all digital radiography machines.</p>
+            </div>
+            <p style="font-size: 16px; color: #64748b; margin-top: 20px;">Context: Plain Radiographic Machines (TMH Gen4, TMH GEN5, TMH ACC3, TMH ACC4 & POH GEN2) have been replaced in recent years.</p>
+        </div>
+        <div class="slide-footer">Slide 4</div>
+    </div>
 
-                    <!-- Tip 2 -->
-                    <div class="border border-gray-100 rounded-lg overflow-hidden">
-                        <button class="w-full flex justify-between items-center p-3 bg-gray-50 text-sm font-medium hover:bg-gray-100 transition" onclick="toggleTip('tip2')">
-                            <span>📱 APP 下載清單</span>
-                            <span class="text-gray-400">▼</span>
-                        </button>
-                        <div id="tip2" class="hidden p-3 text-sm text-gray-600 bg-white">
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Careem / Uber：</strong>叫車必備。</li>
-                                <li><strong>The Entertainer：</strong>買一送一優惠（餐廳/景點）。</li>
-                                <li><strong>WhatsApp：</strong>當地主要聯絡方式。</li>
-                                <li><strong>Google Maps：</strong>導航與大眾運輸查詢。</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Tip 3 -->
-                    <div class="border border-gray-100 rounded-lg overflow-hidden">
-                        <button class="w-full flex justify-between items-center p-3 bg-gray-50 text-sm font-medium hover:bg-gray-100 transition" onclick="toggleTip('tip3')">
-                            <span>🏨 Aloft 住宿攻略</span>
-                            <span class="text-gray-400">▼</span>
-                        </button>
-                        <div id="tip3" class="hidden p-3 text-sm text-gray-600 bg-white">
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Nol Card：</strong>在 City Centre Deira 站買銀卡。</li>
-                                <li><strong>補貨：</strong>隔壁 City Centre 商場有家樂福。</li>
-                                <li><strong>酒吧：</strong>頂樓 WXYZ Bar 氣氛不錯。</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Tip 4 -->
-                    <div class="border border-gray-100 rounded-lg overflow-hidden">
-                        <button class="w-full flex justify-between items-center p-3 bg-gray-50 text-sm font-medium hover:bg-gray-100 transition" onclick="toggleTip('tip4')">
-                            <span>🌡️ 天氣與飲水</span>
-                            <span class="text-gray-400">▼</span>
-                        </button>
-                        <div id="tip4" class="hidden p-3 text-sm text-gray-600 bg-white">
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li>餐廳水很貴，出門前在超市買水帶著。</li>
-                                <li>室內外溫差大，隨身帶薄外套。</li>
-                                <li>防曬是必須的。</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+    <!-- Slide 5: Methodology -->
+    <div class="slide" data-slide="5">
+        <h2>Methodology</h2>
+        <div class="col-2">
+            <div>
+                <ul>
+                    <li><strong>Audit Type:</strong> Retrospective audit using DICOM header data.</li>
+                    <li><strong>Subject Criteria:</strong> Adult patients.</li>
+                    <li><strong>Tool:</strong> Python automation for data collection.</li>
+                </ul>
+                <br>
+                <h3>Sample Sizes</h3>
+                <ul>
+                    <li><strong>Abdomen:</strong> 1,658</li>
+                    <li><strong>KUB:</strong> 2,934</li>
+                    <li><strong>Pelvis:</strong> 1,322</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Parameters Extracted</h3>
+                <table style="font-size: 16px;">
+                    <tr><th>DICOM Tag</th><th>Attribute Name</th></tr>
+                    <tr><td>(0018, 0060)</td><td>kVp</td></tr>
+                    <tr><td>(0018, 1152)</td><td>Exposure (mAs)</td></tr>
+                    <tr><td>(0018, 115E)</td><td>Image area dose product (dGy*cm²)</td></tr>
+                    <tr><td>(0018, 1411)</td><td>Exposure Index</td></tr>
+                </table>
             </div>
         </div>
+        <div class="slide-footer">Slide 5</div>
+    </div>
 
-    </main>
+    <!-- Slide 6: Results NTWC (Chart) -->
+    <div class="slide" data-slide="6">
+        <h2>Results - NTWC (2025)</h2>
+        <p>75th Percentile DAP per Radiograph (dGy·cm²)</p>
+        <div class="chart-wrapper">
+            <canvas id="chartNTWC"></canvas>
+        </div>
+        <div class="slide-footer">Slide 6</div>
+    </div>
 
-    <footer class="bg-gray-800 text-white py-8 mt-12 text-center text-sm">
-        <p class="opacity-70">Made for your Dubai Trip</p>
-        <p class="mt-2 text-xs opacity-50">Budget Estimate: AED 4,700 approx.</p>
-    </footer>
+    <!-- Slide 7: Comparison UK DRL (Chart) -->
+    <div class="slide" data-slide="7">
+        <h2>Comparison with UK National DRL</h2>
+        <p>NTWC (2025) vs UK DRL (2019)</p>
+        <div class="chart-wrapper">
+            <canvas id="chartUKCompare"></canvas>
+        </div>
+        <div class="slide-footer">Slide 7</div>
+    </div>
 
-    <script>
-        // --- Data Structure ---
-        const tripData = {
-            days: [
-                {
-                    id: 1,
-                    title: "Day 1: 穿梭雲端與舊城",
-                    vibe: "從 150 米高的相框，到平地的老城，最後直衝 828 米的世界之巔。",
-                    tags: ["杜拜之框", "老城區", "哈利發塔", "噴泉"],
-                    timeline: [
-                        { time: "09:00", activity: "搭的士前往杜拜之框", icon: "🚕", desc: "開啟旅程的第一站，約 15 分鐘車程。" },
-                        { time: "10:00", activity: "Dubai Frame (杜拜之框)", icon: "🖼️", desc: "走在透明玻璃橋上，左看舊城，右看新城。" },
-                        { time: "12:00", activity: "午餐：Arabian Tea House", icon: "🥞", desc: "Al Fahidi 分店。必點 Emirati Breakfast Tray，藍白風格超好拍。" },
-                        { time: "14:00", activity: "老城區漫步 & Abra 遊船", icon: "⛵", desc: "逛歷史區，搭木船過河 (1 AED)，逛黃金與香料市集。" },
-                        { time: "16:00", activity: "回 Aloft 酒店換裝", icon: "🏨", desc: "稍作休息，換上適合去最高塔的戰袍。" },
-                        { time: "17:00", activity: "Burj Khalifa (哈利發塔)", icon: "🌆", desc: "建議購買 SKY (Level 148) 票，避開人潮，在 VIP Lounge 看夕陽。" },
-                        { time: "19:30", activity: "Dubai Fountain 音樂噴泉", icon: "⛲", desc: "在 Dubai Mall 戶外人工湖畔欣賞震撼水舞。" },
-                        { time: "20:30", activity: "晚餐：Time Out Market", icon: "🍽️", desc: "Souk Al Bahar 內，露台可看夜景，選擇豐富。" }
-                    ],
-                    highlight: {
-                        title: "Burj Khalifa (Level 148)",
-                        desc: "世界最高建築的 VIP 體驗。在 555 米高的 Lounge 享用點心與飲料，俯瞰夕陽下的杜拜，避開底層擁擠的人潮。",
-                        link: "https://www.burjkhalifa.ae/en/",
-                        color: "#C5A065"
-                    },
-                    dining: {
-                        title: "Arabian Tea House",
-                        type: "傳統阿拉伯早午餐",
-                        desc: "老城區的網美地標，藤編椅、白色帷幔與藍色窗框，彷彿置身電影場景。"
-                    },
-                    transport: "本日混合交通：去程與老城區移動使用 Careem/Uber (約 AED 70)；傍晚前往 Dubai Mall 建議搭乘地鐵以免塞車。"
-                },
-                {
-                    id: 2,
-                    title: "Day 2: 棕櫚島名媛風",
-                    vibe: "全球最高 360 度泳池午餐，漫遊棕櫚島，最後以高空鞦韆晚餐作結。",
-                    tags: ["Aura Skypool", "單軌列車", "Madinat", "CÉ LA VI"],
-                    timeline: [
-                        { time: "10:30", activity: "St. Regis Gardens", icon: "🌿", desc: "位於 Nakheel Mall 屋頂，Aura 樓下，漂亮的空中花園散步。" },
-                        { time: "12:00", activity: "午餐：Aura Skypool (預約時段)", icon: "🏊‍♀️", desc: "室內 Lounge 用餐，戶外露台拍照。享受 360 度棕櫚島全景。" },
-                        { time: "14:30", activity: "搭乘 Palm Monorail", icon: "🚝", desc: "從 Nakheel Mall 搭到 Atlantis，沿途欣賞棕櫚葉別墅景觀。" },
-                        { time: "16:30", activity: "Madinat Jumeirah 古城市集", icon: "🛶", desc: "搭乘傳統木船遊運河，拍攝帆船酒店的最佳角度。" },
-                        { time: "19:30", activity: "晚餐：CÉ LA VI", icon: "🍷", desc: "Address Sky View 酒店頂樓，著名的高空鞦韆打卡點。" }
-                    ],
-                    highlight: {
-                        title: "Aura Skypool Lounge",
-                        desc: "不僅是泳池，更是絕佳的觀景台。午餐時段在 Lounge 享用亞式料理，優雅避暑，同時拍出令人羨慕的大片。",
-                        link: "https://auraskypool.com/",
-                        color: "#6CB2EB"
-                    },
-                    dining: {
-                        title: "CÉ LA VI",
-                        type: "當代亞洲料理 / Fine Dining",
-                        desc: "擁有無敵哈利發塔景觀。推薦嘗試他們的晚餐，或者點杯飲料和小食享受氛圍。"
-                    },
-                    transport: "前往棕櫚島建議直接搭的士 (約 AED 70-90)；島上移動用單軌；晚上回程可搭地鐵。"
-                },
-                {
-                    id: 3,
-                    title: "Day 3: 阿布扎比文化一日遊",
-                    vibe: "純白清真寺的莊嚴，金箔咖啡的奢華，羅浮宮的藝術光影。",
-                    tags: ["大清真寺", "皇宮酒店", "羅浮宮"],
-                    timeline: [
-                        { time: "09:30", activity: "出發前往阿布扎比", icon: "🚐", desc: "包車或參加精緻小團，車程約 1.5 小時。" },
-                        { time: "11:00", activity: "Sheikh Zayed Grand Mosque", icon: "🕌", desc: "極致奢華的白色殿堂。請務必嚴格遵守服裝規定。" },
-                        { time: "13:30", activity: "下午茶：Le Café (皇宮酒店)", icon: "☕", desc: "進入八星級酋長皇宮酒店，品嚐招牌金箔咖啡 (Gold Cappuccino)。" },
-                        { time: "16:00", activity: "Louvre Abu Dhabi (羅浮宮)", icon: "🎨", desc: "欣賞建築大師 Jean Nouvel 設計的「光之雨」穹頂。" },
-                        { time: "20:00", activity: "返回杜拜", icon: "🏨", desc: "回到 Aloft 休息。晚餐可叫外賣 (推薦 Al Baik 炸雞)。" }
-                    ],
-                    highlight: {
-                        title: "Sheikh Zayed Grand Mosque",
-                        desc: "阿聯酋最大的清真寺，漢白玉建築與施華洛世奇水晶吊燈。這裡是展現伊斯蘭建築美學的極致。",
-                        link: "https://www.szgmc.gov.ae/en/",
-                        color: "#FFFFFF"
-                    },
-                    dining: {
-                        title: "Le Café @ Emirates Palace",
-                        type: "豪華下午茶",
-                        desc: "金箔咖啡是這裡的標誌。雖然價格不菲 (約 AED 75)，但這是參觀皇宮酒店的入場券。"
-                    },
-                    transport: "跨城市移動強烈建議包車或跟團，省去轉車 3-4 小時的痛苦。"
-                },
-                {
-                    id: 4,
-                    title: "Day 4: 七星級體驗與沙漠傳奇",
-                    vibe: "早上探訪帆船酒店內部，下午進入沙漠保護區享受寧靜。",
-                    tags: ["帆船酒店", "沙漠衝沙", "Land Rover"],
-                    timeline: [
-                        { time: "09:30", activity: "Inside Burj Al Arab", icon: "⛵", desc: "參加導覽團，參觀皇家套房，一窺極致奢華的內部。" },
-                        { time: "12:00", activity: "午餐：周邊簡餐", icon: "🍴", desc: "在 Madinat Jumeirah 快速用餐，然後回酒店/集合點。" },
-                        { time: "14:30", activity: "沙漠衝沙：Platinum Heritage", icon: "🌵", desc: "專車接送。搭乘復古 Land Rover 進入保護區。" },
-                        { time: "17:00", activity: "沙漠野生動物與夕陽", icon: "🐪", desc: "觀賞羚羊，體驗獵鷹秀，在沙漠中看日落。" },
-                        { time: "19:00", activity: "貝都因營地晚餐", icon: "🥘", desc: "傳統阿聯酋料理，沒有吵雜音樂，只有星空與文化。" },
-                        { time: "21:30", activity: "返回酒店", icon: "🚕", desc: "專車送回 Aloft。" }
-                    ],
-                    highlight: {
-                        title: "Platinum Heritage Safari",
-                        desc: "不同於一般的飆沙團，這是注重生態與文化的豪華體驗。復古車、私人營地、精緻餐點，非常適合女生。",
-                        link: "https://www.platinum-heritage.com/",
-                        color: "#D2B48C"
-                    },
-                    dining: {
-                        title: "沙漠營地晚餐",
-                        type: "阿聯酋傳統料理",
-                        desc: "在星空下享用燉駱駝肉 (可選)、烤肉與傳統甜點，氣氛滿分。"
-                    },
-                    transport: "全天主要依賴活動供應商的接送或的士。"
-                },
-                {
-                    id: 5,
-                    title: "Day 5: 花海與環遊世界",
-                    vibe: "季節限定的奇蹟花園，品嚐第一名美食，傍晚在地球村掃貨。",
-                    tags: ["奇蹟花園", "3 Fils", "地球村"],
-                    timeline: [
-                        { time: "10:00", activity: "Dubai Miracle Garden", icon: "🌸", desc: "數千萬朵鮮花組成的巨型造型，飛機、城堡，色彩繽紛。" },
-                        { time: "13:00", activity: "午餐：3 Fils", icon: "🍣", desc: "前往 Jumeirah Fishing Harbour，品嚐杜拜排名第一的休閒餐廳。" },
-                        { time: "16:00", activity: "Global Village (地球村)", icon: "🌍", desc: "巨大的戶外博覽會，各國展館、市集、遊樂設施。" },
-                        { time: "18:00", activity: "購物與晚餐", icon: "🛍️", desc: "購買葉門蜂蜜、堅果，並在園區內品嚐各國路邊攤。" },
-                        { time: "21:00", activity: "返回酒店", icon: "🚕", desc: "車程較遠，約 30-40 分鐘。" }
-                    ],
-                    highlight: {
-                        title: "Global Village",
-                        desc: "集結全世界文化的嘉年華。是購買特色伴手禮（番紅花、香料、披肩）和體驗庶民美食的最佳地點。",
-                        link: "https://www.globalvillage.ae/en/",
-                        color: "#E57373"
-                    },
-                    dining: {
-                        title: "3 Fils",
-                        type: "現代亞洲 / 日式",
-                        desc: "不接受訂位，必須排隊。必點和牛漢堡與創意壽司，就在漁港邊，風景愜意。"
-                    },
-                    transport: "本日景點皆無地鐵直達，全程建議使用的士 (Careem/Uber)。"
-                },
-                {
-                    id: 6,
-                    title: "Day 6: 未來與告別",
-                    vibe: "悠閒的最後一日，見證未來博物館的科幻感，噴泉畔的浪漫晚餐。",
-                    tags: ["未來博物館", "Opso", "Thiptara", "告別"],
-                    timeline: [
-                        { time: "09:30", activity: "Aloft 酒店時光", icon: "🏊", desc: "睡到自然醒，享用泳池與河景早餐，整理行李。" },
-                        { time: "12:30", activity: "午餐：Opso (Dubai Mall)", icon: "🥗", desc: "搭地鐵去 Mall，在時尚的地中海餐廳用餐，最後補貨。" },
-                        { time: "14:30", activity: "Museum of the Future", icon: "🏛️", desc: "搭地鐵至 Emirates Towers。參觀這座「活的博物館」。" },
-                        { time: "17:00", activity: "最後漫步 Downtown", icon: "🚶‍♀️", desc: "回到 Souk Al Bahar 附近，等待夜幕降臨。" },
-                        { time: "19:30", activity: "告別晚餐：Thiptara", icon: "🍛", desc: "Palace Downtown 內。坐在噴泉湖畔吃泰國菜，浪漫滿分。" },
-                        { time: "22:00", activity: "回酒店休息", icon: "🌙", desc: "整理好所有戰利品，準備隔天一早去機場。" }
-                    ],
-                    highlight: {
-                        title: "Museum of the Future",
-                        desc: "被譽為世上最美建築。建議預約下午場次，參觀完出來剛好能欣賞銀色建築亮起書法燈光的魔幻時刻。",
-                        link: "https://museumofthefuture.ae/en",
-                        color: "#A0AEC0"
-                    },
-                    dining: {
-                        title: "Thiptara",
-                        type: "泰國皇室料理",
-                        desc: "意為「水上的魔力」。在 Dubai Fountain 旁邊用餐，近距離感受噴泉的震撼。"
-                    },
-                    transport: "主要使用地鐵 (Aloft <-> Downtown)，晚餐後回酒店可搭的士。"
-                },
-                {
-                    id: 7,
-                    title: "Day 7: 甜蜜返家",
-                    vibe: "帶著滿滿回憶，輕鬆前往機場。",
-                    tags: ["機場", "返程"],
-                    timeline: [
-                        { time: "早晨", activity: "前往機場 (DXB)", icon: "✈️", desc: "從 Aloft 搭的士約 15 分鐘抵達 T1 或 T3。建議起飛前 3 小時到達。" }
-                    ],
-                    highlight: {
-                        title: "Dubai International Airport (DXB)",
-                        desc: "世界級樞紐機場。如果時間充裕，免稅店也是最後衝刺的好地方。",
-                        link: "#",
-                        color: "#4A4A4A"
-                    },
-                    dining: {
-                        title: "機場美食",
-                        type: "咖啡輕食",
-                        desc: "Shake Shack, Costa, Paul 等多種選擇。"
-                    },
-                    transport: "的士 (Careem) 最方便，約 AED 15-25。"
-                }
-            ]
-        };
+    <!-- Slide 8: Comparison Across Hospitals -->
+    <div class="slide" data-slide="8">
+        <h2>Comparison Across Hospitals (Abdomen AP)</h2>
+        <div class="col-2">
+            <div>
+                <p><strong>Key Findings:</strong></p>
+                <ul>
+                    <li><strong>TMH DR:</strong> Generally demonstrates the lowest DAP.</li>
+                    <li><strong>POH DR:</strong> Shows higher DAP in Abdomen AP (9.34 dGy·cm²).</li>
+                    <li>Statistical Difference: p < 0.05 (Significant).</li>
+                </ul>
+            </div>
+            <div class="chart-wrapper" style="height: 300px;">
+                <canvas id="chartHospitals"></canvas>
+            </div>
+        </div>
+        <table style="margin-top:0;">
+            <tr><th>Hospital</th><th>Count</th><th>Mean</th><th>Median</th><th>75th %</th></tr>
+            <tr><td>POH DR</td><td>657</td><td>7.12</td><td>6.15</td><td>9.34</td></tr>
+            <tr><td>TMH DR</td><td>247</td><td>5.25</td><td>4.11</td><td>6.56</td></tr>
+            <tr><td>TSH DR</td><td>754</td><td>6.16</td><td>5.32</td><td>7.82</td></tr>
+        </table>
+        <div class="slide-footer">Slide 8</div>
+    </div>
 
-        // --- Core Logic ---
-        let currentDayId = 1;
+    <!-- Slide 9: Comparison Exam Rooms -->
+    <div class="slide" data-slide="9">
+        <h2>Comparison Across Exam Rooms</h2>
+        <div class="col-2">
+            <div>
+                <h3>Observations</h3>
+                <ul>
+                    <li>Significant variation exists between specific rooms.</li>
+                    <li><strong>High Outlier:</strong> TMH ACC2 (Mean DAP: 8.36).</li>
+                    <li><strong>Low Outlier:</strong> POH GEN1 (Mean DAP: 2.21).</li>
+                    <li><strong>POH A&E:</strong> High volume (1092 cases) with high DAP (~7.79).</li>
+                </ul>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="chartRooms"></canvas>
+            </div>
+        </div>
+        <div class="slide-footer">Slide 9</div>
+    </div>
 
-        function initApp() {
-            renderDayTabs();
-            renderDayContent(currentDayId);
-            initChart();
-        }
+    <!-- Slide 10: New vs Old -->
+    <div class="slide" data-slide="10">
+        <h2>Comparison: New vs. Old Machines</h2>
+        <div class="content-center">
+            <h3>General Trend</h3>
+            <p>Overall, the newly replaced machines demonstrate lower DAP values compared to the unreplaced (old) machines.</p>
+            <ul>
+                <li>New machines (Gen4/5) leverage better detector sensitivity (DQE).</li>
+                <li>Old machines (e.g., POH GEN1, TSH GEN1) show higher variability.</li>
+                <li>Exceptions exist where older machines (like POH GEN1) show very low dose, possibly due to aggressive dose-saving protocols or calibration differences.</li>
+            </ul>
+        </div>
+        <div class="slide-footer">Slide 10</div>
+    </div>
 
-        function renderDayTabs() {
-            const nav = document.getElementById('dayNav');
-            nav.innerHTML = '';
-            tripData.days.forEach(day => {
-                const btn = document.createElement('button');
-                btn.className = `px-5 py-2 mr-2 text-sm font-medium transition-colors whitespace-nowrap rounded-full hover:bg-gray-50 focus:outline-none ${day.id === currentDayId ? 'active-tab bg-yellow-50/50' : 'text-gray-500'}`;
-                btn.textContent = `Day ${day.id}`;
-                btn.onclick = () => {
-                    currentDayId = day.id;
-                    renderDayTabs(); // Re-render to update styling
-                    renderDayContent(day.id);
-                };
-                nav.appendChild(btn);
-            });
-        }
+    <!-- Slide 11: Discussion 1 -->
+    <div class="slide" data-slide="11">
+        <h2>Discussion - Sampling & Volume</h2>
+        <h3>Sampling Period Recommendations</h3>
+        <ul>
+            <li><strong>Issue:</strong> Insufficient sample sizes in TMH ACC3, TMH ACC4, and POH GEN2.</li>
+            <li><strong>Cause:</strong> Recent commissioning (March 2025).</li>
+            <li><strong>Action:</strong> Extend sampling period to at least six months.</li>
+        </ul>
+        <h3>Volume Influence</h3>
+        <ul>
+            <li><strong>Issue:</strong> High-volume rooms (POH A&E and TSH GEN2) dominate the dataset.</li>
+            <li><strong>Impact:</strong> POH A&E’s high DAP skews the overall NTWC result.</li>
+        </ul>
+        <div class="slide-footer">Slide 11</div>
+    </div>
 
-        function renderDayContent(id) {
-            const day = tripData.days.find(d => d.id === id);
-            const contentDiv = document.getElementById('dayContent');
-            
-            // Simple fade effect
-            contentDiv.style.opacity = '0.5';
-            
-            setTimeout(() => {
-                // Update Headers
-                document.getElementById('dayTitle').textContent = day.title;
-                document.getElementById('dayVibe').textContent = `"${day.vibe}"`;
-                
-                // Update Tags
-                const tagsContainer = document.getElementById('dayTags');
-                tagsContainer.innerHTML = day.tags.map(tag => 
-                    `<span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">#${tag}</span>`
-                ).join('');
+    <!-- Slide 12: Discussion 2 -->
+    <div class="slide" data-slide="12">
+        <h2>Discussion - Technical Factors</h2>
+        <div class="col-2">
+            <div>
+                <h3>kVp Settings (TMH ACC4)</h3>
+                <p><strong>Observation:</strong> kVp settings in TMH ACC4 are higher (~85kVp) compared to other rooms (75-78kVp).</p>
+                <p><strong>Result:</strong> Higher EI, but DAP remains comparable.</p>
+            </div>
+            <div>
+                <h3>High kVp Analysis</h3>
+                <ul>
+                    <li><strong>Advantages:</strong> Increased penetration; better DQE.</li>
+                    <li><strong>Disadvantages:</strong> Reduced image contrast (higher scatter).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="highlight-box">
+            <p><strong>Recommendation:</strong> Investigate if high kVp protocols should be adopted for other machines utilizing virtual grids.</p>
+        </div>
+        <div class="slide-footer">Slide 12</div>
+    </div>
 
-                // Update Timeline
-                const timelineContainer = document.getElementById('timelineContainer');
-                // Keep the line, remove items
-                timelineContainer.innerHTML = '<div class="timeline-line"></div>';
-                
-                day.timeline.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'relative z-10 flex items-start';
-                    itemDiv.innerHTML = `
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white border-2 border-[#C5A065] flex items-center justify-center text-sm shadow-sm mr-4 mt-1">
-                            ${item.icon}
-                        </div>
-                        <div class="flex-grow bg-gray-50 rounded-lg p-3 hover:bg-yellow-50 transition border border-transparent hover:border-yellow-100">
-                            <div class="flex justify-between items-baseline mb-1">
-                                <h4 class="font-bold text-gray-800 text-sm">${item.activity}</h4>
-                                <span class="text-xs font-mono text-gray-500 bg-white px-1 rounded">${item.time}</span>
-                            </div>
-                            <p class="text-xs text-gray-600">${item.desc}</p>
-                        </div>
-                    `;
-                    timelineContainer.appendChild(itemDiv);
-                });
+    <!-- Slide 13: Limitations -->
+    <div class="slide" data-slide="13">
+        <h2>Limitations</h2>
+        <ul>
+            <li><strong>Retrospective Nature:</strong> Unreported machine errors may skew results.</li>
+            <li><strong>Patient Data:</strong> Patient weight was not recorded.</li>
+            <li><strong>Image Quality:</strong> Not directly measured (only Exposure Index available).</li>
+            <li><strong>Collimation:</strong> Collimation size was not recorded.</li>
+        </ul>
+        <div class="slide-footer">Slide 13</div>
+    </div>
 
-                // Update Highlight
-                if (day.highlight) {
-                    document.getElementById('highlightTitle').textContent = day.highlight.title;
-                    document.getElementById('highlightDesc').textContent = day.highlight.desc;
-                    document.getElementById('highlightLink').href = day.highlight.link;
-                    document.getElementById('highlightLink').style.display = 'block';
-                    
-                    // Simulated color block for image
-                    const placeholder = document.getElementById('highlightImgPlaceholder');
-                    placeholder.style.backgroundColor = day.highlight.color || '#ddd';
-                    placeholder.style.color = 'white';
-                    placeholder.innerHTML = `<span class="text-2xl drop-shadow-md">${day.highlight.title.split(' ')[0]}</span>`;
-                } else {
-                    document.getElementById('highlightTitle').textContent = "返程日";
-                    document.getElementById('highlightDesc').textContent = "祝旅途愉快！";
-                    document.getElementById('highlightLink').style.display = 'none';
-                }
+    <!-- Slide 14: Follow Up Actions -->
+    <div class="slide" data-slide="14">
+        <h2>Follow Up Actions</h2>
+        <h3>POH A&E Investigation</h3>
+        <ul>
+            <li><strong>Finding:</strong> DAP in POH A&E is higher than TMH & TSW.</li>
+            <li><strong>Root Cause:</strong> Protocols differ.
+                <ul>
+                    <li><em>POH A&E:</em> ECF 0</li>
+                    <li><em>POH GEN 1/2:</em> ECF -3</li>
+                </ul>
+            </li>
+            <li><strong>Action:</strong> Review protocols to explore if lower ECF settings are feasible.</li>
+        </ul>
+        <h3>Specific Anomalies</h3>
+        <ul>
+            <li><strong>TMH ACC2:</strong> High DAP observed; may result from machine aging.</li>
+        </ul>
+        <div class="slide-footer">Slide 14</div>
+    </div>
 
-                // Update Dining
-                if (day.dining) {
-                    document.getElementById('diningTitle').textContent = day.dining.title;
-                    document.getElementById('diningType').textContent = day.dining.type;
-                    document.getElementById('diningDesc').textContent = day.dining.desc;
-                    document.getElementById('diningTitle').parentElement.parentElement.style.display = 'block';
-                } else {
-                    document.getElementById('diningTitle').parentElement.parentElement.style.display = 'none';
-                }
+    <!-- Slide 15: Conclusion -->
+    <div class="slide" data-slide="15">
+        <h2>Conclusion</h2>
+        <div class="content-center">
+            <ul>
+                <li>The local DRL of NTWC DR is significantly lower than the UK standard (2019).</li>
+                <li>TMH demonstrates the lowest hospital DRL within the NTWC cluster.</li>
+                <li>Overall, the new machines have lower DAP than the old machines.</li>
+                <li>Variances in specific rooms likely attributed to machine aging or higher ECF settings.</li>
+            </ul>
+        </div>
+        <div class="slide-footer">Slide 15</div>
+    </div>
 
-                // Update Transport
-                document.getElementById('transportTip').textContent = day.transport;
+    <!-- Slide 16: References -->
+    <div class="slide" data-slide="16">
+        <h2>References</h2>
+        <ol style="font-size: 16px;">
+            <li>The UK Health Security Agency. Patient doses from radiographic and simple fluoroscopic X-ray imaging procedures in the UK 2019 review. 2025.</li>
+            <li>Ching W, Robinson J, McEntee M. Patient‐based radiographic exposure factor selection: a systematic review. <em>Journal of Medical Radiation Sciences</em>. 2014;61(3):176-90.</li>
+            <li>Ching W, Robinson J, McEntee MF. DigiBit: A System for Adjusting Radiographic Exposure Factors in the Digital Era. <em>Radiologic Technology</em>. 2015;86(6).</li>
+            <li>Lee CM. Advanced Statistical Analysis Tool [Web application]. 2026.</li>
+        </ol>
+        <div class="slide-footer">Slide 16</div>
+    </div>
 
-                contentDiv.style.opacity = '1';
-            }, 150);
-        }
+    <!-- Slide 17: Q&A -->
+    <div class="slide title-slide dark-slide" data-slide="17" style="text-align: center; align-items: center;">
+        <h1>Q & A</h1>
+        <p style="color: #cbd5e1;">Thank you for your attention.</p>
+        <div class="slide-footer">Slide 17</div>
+    </div>
 
-        // --- Chart.js Logic ---
-        function initChart() {
-            const ctx = document.getElementById('budgetChart').getContext('2d');
-            
-            // Estimated breakdown based on report:
-            // Total: ~4700 AED
-            // Tickets/Activities: ~1800 AED
-            // Food: ~2200 AED
-            // Transport: ~700 AED
-            
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['門票與體驗 (38%)', '餐飲美食 (47%)', '交通 (15%)'],
-                    datasets: [{
-                        data: [1800, 2200, 700],
-                        backgroundColor: [
-                            '#D4AF37', // Gold (Tickets)
-                            '#E8E1D5', // Sand (Food)
-                            '#4A4A4A'  // Dark (Transport)
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: { family: "'Noto Sans TC', sans-serif", size: 12 },
-                                usePointStyle: true,
-                                padding: 20
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label = label.split(' (')[0] + ': ';
-                                    }
-                                    if (context.parsed !== null) {
-                                        label += context.parsed + ' AED';
-                                    }
-                                    return label;
-                                }
-                            },
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            titleColor: '#333',
-                            bodyColor: '#666',
-                            borderColor: '#eee',
-                            borderWidth: 1,
-                            padding: 10,
-                            displayColors: true
-                        }
-                    }
-                }
-            });
-        }
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="nav-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
 
-        // Toggle Tips
-        function toggleTip(id) {
-            const el = document.getElementById(id);
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-            } else {
-                el.classList.add('hidden');
+</div>
+
+<script>
+    // --- SLIDE NAVIGATION ---
+    let currentSlide = 1;
+    const totalSlides = 17;
+
+    function showSlide(slideNum) {
+        if (slideNum < 1) slideNum = 1;
+        if (slideNum > totalSlides) slideNum = totalSlides;
+        
+        currentSlide = slideNum;
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.classList.remove('active', 'prev');
+            const slideIndex = parseInt(slide.dataset.slide);
+            if (slideIndex < currentSlide) {
+                slide.classList.add('prev');
+            } else if (slideIndex === currentSlide) {
+                slide.classList.add('active');
             }
+        });
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+    document.addEventListener('keydown', function(event) {
+        if(event.key === "ArrowRight") nextSlide();
+        if(event.key === "ArrowLeft") prevSlide();
+    });
+
+    // --- CHART GENERATION (Using Data from Text) ---
+    // Common Config
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size = 14;
+    Chart.defaults.color = '#334155';
+
+    // 1. NTWC 2025 Results (Grouped Bar)
+    new Chart(document.getElementById('chartNTWC'), {
+        type: 'bar',
+        data: {
+            labels: ['Abdomen AP', 'KUB AP', 'Pelvis AP'],
+            datasets: [
+                { label: 'TMH DR', data: [6.56, 7.42, 5.77], backgroundColor: '#3b82f6' },
+                { label: 'POH DR', data: [9.34, 8.54, 5.42], backgroundColor: '#ef4444' }, // Red for high
+                { label: 'TSH DR', data: [7.82, 8.60, 7.43], backgroundColor: '#10b981' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' }, title: { display: false } },
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'DAP (dGy·cm²)' } } }
         }
+    });
 
-        // Init
-        document.addEventListener('DOMContentLoaded', initApp);
+    // 2. Comparison UK vs NTWC
+    new Chart(document.getElementById('chartUKCompare'), {
+        type: 'bar',
+        data: {
+            labels: ['Abdomen AP', 'KUB AP', 'Pelvis AP'],
+            datasets: [
+                { label: 'UK DRL (2019)', data: [16, 16, 14], backgroundColor: '#94a3b8' },
+                { label: 'NTWC (2025)', data: [8.25, 8.11, 6.29], backgroundColor: '#3b82f6' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'DAP (dGy·cm²)' } } }
+        }
+    });
 
-    </script>
+    // 3. Hospital Comparison (Slide 8)
+    new Chart(document.getElementById('chartHospitals'), {
+        type: 'bar',
+        data: {
+            labels: ['TMH DR', 'POH DR', 'TSH DR'],
+            datasets: [{
+                label: 'Mean DAP (Abdomen)',
+                data: [5.25, 7.12, 6.16],
+                backgroundColor: ['#3b82f6', '#ef4444', '#10b981']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // 4. Room Comparison (Slide 9) - Specific Outliers
+    new Chart(document.getElementById('chartRooms'), {
+        type: 'bar',
+        data: {
+            labels: ['POH GEN1', 'TMH DR (Avg)', 'POH A&E', 'TMH ACC2'],
+            datasets: [{
+                label: 'Mean DAP (dGy·cm²)',
+                data: [2.21, 5.25, 7.79, 8.36],
+                backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#ef4444']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+
 </body>
 </html>
-
