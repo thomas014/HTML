@@ -132,19 +132,25 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 18px;
+            font-size: 16px;
             margin-top: 15px;
             background: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background-color: #f8fafc; font-weight: 700; color: var(--bg-color); }
         tr:last-child td { border-bottom: none; }
+        
+        .dicom-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
 
         /* --- CHART CONTAINERS --- */
         .chart-wrapper {
             position: relative;
-            height: 400px;
+            height: 350px;
             width: 100%;
             display: flex;
             justify-content: center;
@@ -271,32 +277,31 @@
 
     <!-- Slide 5: Methodology -->
     <div class="slide" data-slide="5">
-        <h2>Methodology</h2>
-        <div class="col-2">
-            <div>
-                <ul>
-                    <li><strong>Audit Type:</strong> Retrospective audit using DICOM header data.</li>
-                    <li><strong>Subject Criteria:</strong> Adult patients.</li>
-                    <li><strong>Tool:</strong> Python automation for data collection.</li>
-                </ul>
-                <br>
-                <h3>Sample Sizes</h3>
-                <ul>
-                    <li><strong>Abdomen:</strong> 1,658</li>
-                    <li><strong>KUB:</strong> 2,934</li>
-                    <li><strong>Pelvis:</strong> 1,322</li>
-                </ul>
-            </div>
-            <div>
-                <h3>Parameters Extracted</h3>
-                <table style="font-size: 16px;">
-                    <tr><th>DICOM Tag</th><th>Attribute Name</th></tr>
-                    <tr><td>(0018, 0060)</td><td>kVp</td></tr>
-                    <tr><td>(0018, 1152)</td><td>Exposure (mAs)</td></tr>
-                    <tr><td>(0018, 115E)</td><td>Image area dose product (dGy*cm²)</td></tr>
-                    <tr><td>(0018, 1411)</td><td>Exposure Index</td></tr>
-                </table>
-            </div>
+        <h2>Methodology - Data Extraction</h2>
+        <p><strong>Audit Type:</strong> Retrospective audit utilizing Python automation to extract DICOM header data.</p>
+        <p><strong>Parameters Extracted:</strong></p>
+        
+        <div class="dicom-table">
+            <table>
+                <tr><th>DICOM Tag</th><th>Attribute Name</th></tr>
+                <tr><td>(0008, 0020)</td><td>Study Date</td></tr>
+                <tr><td>(0008, 0050)</td><td>Accession Number</td></tr>
+                <tr><td>(0010, 0040)</td><td>Patient's Sex</td></tr>
+                <tr><td>(0010, 1010)</td><td>Patient's Age</td></tr>
+                <tr><td>(0018, 0015)</td><td>Body Part Examined</td></tr>
+                <tr><td>(0018, 5100)</td><td>Patient Position</td></tr>
+                <tr><td>(0018, 1030)</td><td>Protocol Name</td></tr>
+            </table>
+            <table>
+                <tr><th>DICOM Tag</th><th>Attribute Name</th></tr>
+                <tr><td>(0018, 0060)</td><td>kVp</td></tr>
+                <tr><td>(0018, 1152)</td><td>Exposure (mAs)</td></tr>
+                <tr><td>(0018, 115E)</td><td>Image Area Dose Product</td></tr>
+                <tr><td>(0018, 1166)</td><td>Grid</td></tr>
+                <tr><td>(0018, 1411)</td><td>Exposure Index</td></tr>
+                <tr><td>(0018, 1412)</td><td>Target Exposure Index</td></tr>
+                <tr><td>(0018, 1413)</td><td>Deviation Index</td></tr>
+            </table>
         </div>
         <div class="slide-footer">Slide 5</div>
     </div>
@@ -325,24 +330,21 @@
     <div class="slide" data-slide="8">
         <h2>Comparison Across Hospitals (Abdomen AP)</h2>
         <div class="col-2">
-            <div>
-                <p><strong>Key Findings:</strong></p>
-                <ul>
-                    <li><strong>TMH DR:</strong> Generally demonstrates the lowest DAP.</li>
-                    <li><strong>POH DR:</strong> Shows higher DAP in Abdomen AP (9.34 dGy·cm²).</li>
-                    <li>Statistical Difference: p < 0.05 (Significant).</li>
-                </ul>
-            </div>
             <div class="chart-wrapper" style="height: 300px;">
                 <canvas id="chartHospitals"></canvas>
             </div>
+            <div>
+                <table>
+                    <tr><th>Hospital</th><th>Count</th><th>Mean</th><th>Median</th><th>75th %</th></tr>
+                    <tr style="background-color: #fee2e2;"><td>POH DR</td><td>657</td><td>7.12</td><td>6.15</td><td>9.34</td></tr>
+                    <tr><td>TMH DR</td><td>247</td><td>5.25</td><td>4.11</td><td>6.56</td></tr>
+                    <tr><td>TSH DR</td><td>754</td><td>6.16</td><td>5.32</td><td>7.82</td></tr>
+                    <tr style="border-top: 2px solid #334155;">
+                        <td colspan="5"><strong>Statistical Result:</strong><br>Kruskal-Wallis Test: <em>p < 0.05</em><br><span style="color:#ef4444; font-size: 14px;">Significant difference observed</span></td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <table style="margin-top:0;">
-            <tr><th>Hospital</th><th>Count</th><th>Mean</th><th>Median</th><th>75th %</th></tr>
-            <tr><td>POH DR</td><td>657</td><td>7.12</td><td>6.15</td><td>9.34</td></tr>
-            <tr><td>TMH DR</td><td>247</td><td>5.25</td><td>4.11</td><td>6.56</td></tr>
-            <tr><td>TSH DR</td><td>754</td><td>6.16</td><td>5.32</td><td>7.82</td></tr>
-        </table>
         <div class="slide-footer">Slide 8</div>
     </div>
 
@@ -350,17 +352,19 @@
     <div class="slide" data-slide="9">
         <h2>Comparison Across Exam Rooms</h2>
         <div class="col-2">
-            <div>
-                <h3>Observations</h3>
-                <ul>
-                    <li>Significant variation exists between specific rooms.</li>
-                    <li><strong>High Outlier:</strong> TMH ACC2 (Mean DAP: 8.36).</li>
-                    <li><strong>Low Outlier:</strong> POH GEN1 (Mean DAP: 2.21).</li>
-                    <li><strong>POH A&E:</strong> High volume (1092 cases) with high DAP (~7.79).</li>
-                </ul>
-            </div>
             <div class="chart-wrapper">
                 <canvas id="chartRooms"></canvas>
+            </div>
+            <div>
+                <h3>Key Observations & Statistics</h3>
+                <table>
+                    <tr><th>Exam Room</th><th>Mean DAP</th><th>Observation</th></tr>
+                    <tr><td>TMH ACC2</td><td>8.36</td><td style="color:#ef4444;">Highest Mean (Outlier)</td></tr>
+                    <tr><td>POH A&E</td><td>7.79</td><td>High Vol. & High Dose</td></tr>
+                    <tr><td>TMH DR Avg</td><td>5.25</td><td>Cluster Average</td></tr>
+                    <tr><td>POH GEN1</td><td>2.21</td><td style="color:#10b981;">Lowest Mean (p < 0.05)</td></tr>
+                </table>
+                <p style="margin-top: 15px; font-size: 16px;"><em>Significant variation exists across rooms (p < 0.05).</em></p>
             </div>
         </div>
         <div class="slide-footer">Slide 9</div>
@@ -369,14 +373,22 @@
     <!-- Slide 10: New vs Old -->
     <div class="slide" data-slide="10">
         <h2>Comparison: New vs. Old Machines</h2>
-        <div class="content-center">
-            <h3>General Trend</h3>
-            <p>Overall, the newly replaced machines demonstrate lower DAP values compared to the unreplaced (old) machines.</p>
-            <ul>
-                <li>New machines (Gen4/5) leverage better detector sensitivity (DQE).</li>
-                <li>Old machines (e.g., POH GEN1, TSH GEN1) show higher variability.</li>
-                <li>Exceptions exist where older machines (like POH GEN1) show very low dose, possibly due to aggressive dose-saving protocols or calibration differences.</li>
-            </ul>
+        <div class="col-2">
+            <div class="content-center">
+                <h3>General Trend</h3>
+                <ul>
+                    <li>New machines (Gen4/5) leverage better detector sensitivity (DQE).</li>
+                    <li>Old machines (e.g., TSH GEN1) show higher variability.</li>
+                    <li><strong>Conclusion:</strong> Modernization generally reduces patient dose.</li>
+                </ul>
+            </div>
+            <div>
+                <table>
+                    <tr><th>Category</th><th>Performance</th><th>Statistical Note</th></tr>
+                    <tr><td><strong>New Machines</strong><br>(Gen 4/5)</td><td>Lower DAP<br>Consistent EI</td><td>Significantly Lower<br>Variability</td></tr>
+                    <tr><td><strong>Old Machines</strong><br>(Gen 1/2)</td><td>Higher DAP<br>Variable EI</td><td>p < 0.05</td></tr>
+                </table>
+            </div>
         </div>
         <div class="slide-footer">Slide 10</div>
     </div>
